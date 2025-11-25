@@ -23,5 +23,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "mystery-manager-v22"
+rootProject.name = "mystery-manager"
 include(":app", ":api")
