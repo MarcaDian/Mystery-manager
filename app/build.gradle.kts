@@ -135,7 +135,7 @@ android {
             major * 10_000_000 +
                     minor * 10_000 +
                     patch * 100 +
-                    (preRelease?.substringAfterLast('.')?.toInt() ?: 99)
+                    (preRelease?.substringAfterLast('.')?.toInt() ?: 0)
         }
         vectorDrawables.useSupportLibrary = true
     }
