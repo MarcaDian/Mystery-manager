@@ -9,7 +9,6 @@ plugins {
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.devtools)
     alias(libs.plugins.about.libraries)
-    signing
 }
 
 val outputApkFileName = "${rootProject.name}-$version.apk"
@@ -144,7 +143,7 @@ android {
     buildTypes {
         debug {
             applicationIdSuffix = ".debug"
-            resValue("string", "app_name", "ReVanced Manager (Debug)")
+            resValue("string", "app_name", "Mystery Manager (Debug)")
             isPseudoLocalesEnabled = true
 
             buildConfigField("long", "BUILD_ID", "${Random.nextLong()}L")
@@ -157,21 +156,23 @@ android {
                 proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
             }
 
-            val keystoreFile = file("keystore.jks")
+            applicationIdSuffix = ".liso"
+            resValue("string", "app_name", "Mystery Manager")
 
-            if (project.hasProperty("signAsDebug") || !keystoreFile.exists()) {
-                applicationIdSuffix = ".debug_signed"
-                resValue("string", "app_name", "ReVanced Manager (Debug signed)")
-                signingConfig = signingConfigs.getByName("debug")
-
-                isPseudoLocalesEnabled = true
-            } else {
-                signingConfig = signingConfigs.create("release") {
-                    storeFile = keystoreFile
-                    storePassword = System.getenv("KEYSTORE_PASSWORD")
-                    keyAlias = System.getenv("KEYSTORE_ENTRY_ALIAS")
-                    keyPassword = System.getenv("KEYSTORE_ENTRY_PASSWORD")
+            signingConfig = if (
+                project.hasProperty("signing.storeFile") &&
+                project.hasProperty("signing.storePassword") &&
+                project.hasProperty("signing.keyAlias") &&
+                project.hasProperty("signing.keyPassword")
+            ) {
+                signingConfigs.create("ci") {
+                    storeFile = file(project.property("signing.storeFile") as String)
+                    storePassword = project.property("signing.storePassword") as String
+                    keyAlias = project.property("signing.keyAlias") as String
+                    keyPassword = project.property("signing.keyPassword") as String
                 }
+            } else {
+                signingConfigs.getByName("debug")
             }
 
             buildConfigField("long", "BUILD_ID", "0L")
@@ -243,28 +244,4 @@ android {
 
 kotlin {
     jvmToolchain(17)
-}
-
-tasks {
-    // Needed by gradle-semantic-release-plugin.
-    // Tracking: https://github.com/KengoTODA/gradle-semantic-release-plugin/issues/435.
-    val publish by registering {
-        group = "publishing"
-        description = "Build the release APK"
-
-        dependsOn("assembleRelease")
-
-        val apk = project.layout.buildDirectory.file("outputs/apk/release/${outputApkFileName}")
-        val ascFile = apk.map { it.asFile.resolveSibling("${it.asFile.name}.asc") }
-
-        inputs.file(apk).withPropertyName("inputApk")
-        outputs.file(ascFile).withPropertyName("outputAsc")
-
-        doLast {
-            signing {
-                useGpgCmd()
-                sign(apk.get().asFile)
-            }
-        }
-    }
 }

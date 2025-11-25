@@ -19,8 +19,9 @@ dependencyResolutionManagement {
                 password = System.getenv("GITHUB_TOKEN") ?: extra["gpr.key"] as String?
             }
         }
+        maven { url = uri("https://raw.githubusercontent.com/MarcaDian/maven/maven-repo/repository") }
     }
 }
 
-rootProject.name = "revanced-manager"
+rootProject.name = "mystery-manager-v22"
 include(":app", ":api")
