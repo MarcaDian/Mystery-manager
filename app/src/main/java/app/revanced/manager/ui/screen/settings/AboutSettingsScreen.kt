@@ -69,7 +69,7 @@ fun AboutSettingsScreen(
     val context = LocalContext.current
     // painterResource() is broken on release builds for some reason.
     val icon = rememberDrawablePainter(drawable = remember {
-        AppCompatResources.getDrawable(context, R.drawable.ic_logo_ring)
+        AppCompatResources.getDrawable(context, R.drawable.ic_launcher_foreground)
     })
 
     val (preferredSocials, socials) = remember(viewModel.socials) {
