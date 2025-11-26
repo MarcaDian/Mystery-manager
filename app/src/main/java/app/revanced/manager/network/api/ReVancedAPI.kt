@@ -35,7 +35,15 @@ class ReVancedAPI(
     suspend fun getLatestAppInfo() =
         request<ReVancedAsset>("manager?prerelease=${prefs.useManagerPrereleases.get()}")
 
-    suspend fun getPatchesUpdate() = request<ReVancedAsset>("patches?prerelease=${prefs.usePatchesPrereleases.get()}")
+    suspend fun getPatchesUpdate(): APIResponse<ReVancedAsset> = withContext(Dispatchers.IO) {
+        val url = apiUrl()
+
+        if (url.contains("http") || url.endsWith(".json")) {
+            client.request { url(url) }
+        } else {
+            request<ReVancedAsset>("patches?prerelease=${prefs.usePatchesPrereleases.get()}")
+        }
+    }
 
     suspend fun getContributors() = request<List<ReVancedGitRepository>>("contributors")
 

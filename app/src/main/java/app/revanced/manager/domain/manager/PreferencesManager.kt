@@ -12,7 +12,7 @@ class PreferencesManager(
     val pureBlackTheme = booleanPreference("pure_black_theme", true)
     val theme = enumPreference("theme", Theme.SYSTEM)
 
-    val api = stringPreference("api_url", "")
+    val api = stringPreference("api_url", "https://raw.githubusercontent.com/Jman-Github/ReVanced-Patch-Bundles/bundles/patch-bundles/lisouseInaikyrios-patch-bundles/lisouseInaikyrios-latest-patches-bundle.json")
 
     val useProcessRuntime = booleanPreference("use_process_runtime", false)
     val patcherProcessMemoryLimit = intPreference("process_runtime_memory_limit", 700)
