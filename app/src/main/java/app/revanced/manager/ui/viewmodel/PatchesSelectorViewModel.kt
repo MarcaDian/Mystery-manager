@@ -107,7 +107,7 @@ class PatchesSelectorViewModel(input: SelectedApplicationInfo.PatchesSelector.Vi
 
     val compatibleVersions = mutableStateListOf<String>()
 
-    var filter by mutableIntStateOf(SHOW_UNIVERSAL)
+    var filter by mutableIntStateOf(SHOW_UNIVERSAL or SHOW_INCOMPATIBLE)
         private set
 
     private val defaultPatchSelection = bundlesFlow.map { bundles ->
